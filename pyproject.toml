@@ -1,0 +1,15 @@
+[tool.poetry]
+name = "pygameleveleditor"
+version = "0.0.1"
+description = ""
+authors = ["Axis <77634274+blankRiot96@users.noreply.github.com>"]
+license = "MIT License"
+
+[tool.poetry.dependencies]
+python = "^3.10"
+
+[tool.poetry.dev-dependencies]
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"

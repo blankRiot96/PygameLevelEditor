@@ -1,6 +1,7 @@
 import pygame
 from pgle.events import EventBuilder, ControlScheme
 from pgle._types import Controls
+from pgle.states.editor import EditorState
 
 
 class Game:
@@ -21,14 +22,19 @@ class Game:
             {Controls.SINGLE: {"quit": [pygame.QUIT, pygame.K_ESCAPE]}, 
             Controls.HOLD: {}}
         )
+        self.state = EditorState(self.event_builder)
 
     def _update(self) -> None:
         self.event_builder.build()
         if "quit" in self.exit_scheme.get_controls():
             self._is_running = False
+        
+        self.state.update()
 
     def _draw(self) -> None:
-        pass
+        self._screen.fill("black")
+        self.state.draw(self._screen)
+        pygame.display.flip()
 
     def run(self) -> None:
         while self._is_running:

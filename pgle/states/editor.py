@@ -1,6 +1,15 @@
+"""
+This file is a part of the 'PygameLevelEditor' source code.
+The source code is distributed under the MIT license.
+
+This code uses the stages pattern which can be found documented 
+in docs/patterns/stages.md
+"""
+
 import pygame
-from pgle.ui.grid import GridManager
+
 from pgle.events import EventBuilder
+from pgle.ui.grid import GridManager
 
 
 class EditorInitStage:

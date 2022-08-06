@@ -1,13 +1,17 @@
+"""
+This file is a part of the 'PygameLevelEditor' source code.
+The source code is distributed under the MIT license.
+"""
+
 import pygame
-from pgle.events import EventBuilder, ControlScheme
+
 from pgle._types import Controls
+from pgle.events import ControlScheme, EventBuilder
 from pgle.states.editor import EditorState
 
 
 class Game:
-    """
-    Handles all game related events.
-    """
+    """Handles all game related events."""
 
     SIZE = 1100, 600
     FLAGS = 0
@@ -19,8 +23,10 @@ class Game:
         self.event_builder = EventBuilder()
         self.exit_scheme = ControlScheme(
             self.event_builder,
-            {Controls.SINGLE: {"quit": [pygame.QUIT, pygame.K_ESCAPE]}, 
-            Controls.HOLD: {}}
+            {
+                Controls.SINGLE: {"quit": [pygame.QUIT, pygame.K_ESCAPE]},
+                Controls.HOLD: {},
+            },
         )
         self.state = EditorState(self.event_builder)
 
@@ -28,7 +34,7 @@ class Game:
         self.event_builder.build()
         if "quit" in self.exit_scheme.get_controls():
             self._is_running = False
-        
+
         self.state.update()
 
     def _draw(self) -> None:

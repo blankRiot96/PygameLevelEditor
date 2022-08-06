@@ -12,9 +12,11 @@ class GridManager:
         self.boiler_surf.set_alpha(150)
         self.boiler_pos = (0, 0)
         self.draw_surf = False
+        self.grid_surf = pygame.Surface(rect.size, pygame.SRCALPHA)
 
     def update(self, event_builder: EventBuilder) -> None:
         mx, my = event_builder.mouse_pos
+        mx, my = mx - self.rect.x, my - self.rect.y
         self.boiler_pos = (
             mx - (mx % self.tile_size),
             my - (my % self.tile_size)
@@ -25,8 +27,9 @@ class GridManager:
             self.draw_surf = False
 
     def draw(self, screen):
-        if self.draw_surf:
-            screen.blit(self.boiler_surf, self.boiler_pos)
+        self.grid_surf.fill("black")
+        self.grid_surf.blit(self.boiler_surf, self.boiler_pos)
+        screen.blit(self.grid_surf, self.rect)
         for col in range(self.size[0] // self.tile_size):
             coord = (col * self.tile_size)
             pygame.draw.line(screen, "white", self.rect.topleft + pygame.Vector2(coord, 0), self.rect.topleft + pygame.Vector2(coord, self.rect.height))

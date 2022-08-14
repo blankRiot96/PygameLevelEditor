@@ -7,15 +7,16 @@ import pygame
 from loguru import logger
 
 from pgle._types import Controls, ControlsType
+from pgle.abc import Singleton
 
 
-class EventBuilder:
+class EventBuilder(Singleton):
     """
-    An event builder to build all events when required
+    A singleton event builder to build all events when required
     and is easily accessible across the code base.
     There is only one event builder object meant to be defined,
     and its references are meant to be passed down along the
-    abstraction hierarchy.
+    abstraction hierarchy. Instantiating this always returns the same instance.
     Example: Game -> EditorState -> GridManager
     """
 
@@ -68,11 +69,11 @@ class ControlScheme:
 
     The controls dictionary goes like so,
     {
-        Controls.SINGLE: ControlType,
-        Controls.HOLD: ControlType
+        Controls.SINGLE: Control,
+        Controls.HOLD: Control
     }
 
-    The `Controls.SINGLE` is mapped to a `ControlType`,
+    The `Controls.SINGLE` is mapped to a `Control`,
     which indicates that every control listed there is on
     a single click/press.
 
@@ -81,7 +82,7 @@ class ControlScheme:
     meant to activate for as long as they are being held.
     They deactivate when released.
 
-    `ControlType` looks like so,
+    `Control` looks like so,
     {
         "right": [pygame.K_d, pygame.K_RIGHT],
         "left": [pygame.K_a, pygame.K_LEFT]
@@ -95,7 +96,7 @@ class ControlScheme:
                          information pertaining the controls.
     """
 
-    def __init__(self, event_builder: EventBuilder, controls: ControlsType) -> None:
+    def __init__(self, event_builder: EventBuilder = EventBuilder(), controls: ControlsType = {}) -> None:
         """Constructor of the ControlScheme class.
 
         Args:

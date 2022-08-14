@@ -1,0 +1,30 @@
+{
+    "version": "0.0.1",
+    "layers": {
+        "myfancyname": {
+            "type": "tiled",
+            "tile-size": 32,
+            "tiles": [
+                {   
+                    "type": "brick",
+                    "pos": [0, 0],
+                    "image": ""
+                },
+                {
+                    "type": "brick",
+                    "pos": [1, 0],
+                    "image": ""
+                }
+            ]
+        },
+        "the epic layer": {
+            "type": "object",
+            "objects": {
+                "pos": [33, 75],
+                "image": ""
+            }
+        }
+    }
+}
+
+

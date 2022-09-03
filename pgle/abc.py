@@ -1,5 +1,6 @@
 from abc import ABC
 
+
 class Singleton(ABC):
     _inst = None
 
@@ -12,6 +13,3 @@ class Singleton(ABC):
     def __init__(self):
         if self._inst:
             return
-
-
-

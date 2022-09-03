@@ -10,6 +10,12 @@ from pgle.events import ControlScheme, EventBuilder
 from pgle.states.editor import EditorState
 
 
+surf = pygame.Surface((50, 50), pygame.SRCALPHA)
+surf.fill("red")
+surf.set_alpha(150)
+pygame.image.save(surf, "assets/default_tile.png")
+
+
 class Game:
     """Handles all game related events."""
 
@@ -19,6 +25,8 @@ class Game:
     def __init__(self) -> None:
         pygame.init()
         self._screen = pygame.display.set_mode(self.SIZE, self.FLAGS)
+        pygame.display.set_caption("Pygame Level Editor | Editor")
+        pygame.display.set_icon(pygame.image.load("assets/logo.png"))
         self._is_running = True
         self.event_builder = EventBuilder()
         self.exit_scheme = ControlScheme(

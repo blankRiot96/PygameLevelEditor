@@ -35,6 +35,9 @@ class EventBuilder(Singleton):
         Returns:
             If the key is being held. True if it is, False if otherwise.
         """
+        if key == Controls.MOUSE.value:
+            return pygame.mouse.get_pressed()[0]
+
         return self.key_pressed[key]
 
     def is_key_pressed(self, key: int) -> bool:
@@ -70,7 +73,7 @@ class ControlScheme:
     The controls dictionary goes like so,
     {
         Controls.SINGLE: Control,
-        Controls.HOLD: Control
+        Controls.HOLD: Control,
     }
 
     The `Controls.SINGLE` is mapped to a `Control`,
@@ -96,7 +99,9 @@ class ControlScheme:
                          information pertaining the controls.
     """
 
-    def __init__(self, event_builder: EventBuilder = EventBuilder(), controls: ControlsType = {}) -> None:
+    def __init__(
+        self, event_builder: EventBuilder = EventBuilder(), controls: ControlsType = {}
+    ) -> None:
         """Constructor of the ControlScheme class.
 
         Args:

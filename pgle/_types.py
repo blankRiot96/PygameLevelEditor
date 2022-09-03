@@ -16,6 +16,7 @@ import pygame
 class Controls(enum.Enum):
     SINGLE = enum.auto()
     HOLD = enum.auto()
+    MOUSE = enum.auto()
 
 
 PygameEvent = int

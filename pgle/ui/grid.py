@@ -42,13 +42,8 @@ class ControlBlock:
 
     def place_tile(self, grid_surf: pygame.Surface) -> None:
         grid_surf.blit()
-        tile = {
-            "type": self.current_tile,
-            "pos": list(self.rect.topleft),
-            "image": ...
-        }
+        tile = {"type": self.current_tile, "pos": list(self.rect.topleft), "image": ...}
         layers["main"].append(tile)
-
 
     def update(self, mouse_pos: Pos) -> None:
         """Updates the ControlBlock.
@@ -94,7 +89,9 @@ class GridManager:
         tile_size (int): Size of each tile.
     """
 
-    def __init__(self, rect: pygame.Rect, tile_size: int) -> None:
+    def __init__(
+        self, rect: pygame.Rect, tile_size: int, json_layers: dict = {"tiles": []}
+    ) -> None:
         """Constructor of the GridManager class.
 
         Args:
@@ -109,11 +106,24 @@ class GridManager:
         self.tile_size = tile_size
         self._control_block = ControlBlock(tile_size, self.rect)
         self.surf = pygame.Surface(rect.size, pygame.SRCALPHA)
-        self._current_layer = "main"
+        self._current_layer = "tiles"
         self._registered_tile_types = ["default"]
-        self.layers = {
-            "tiles": []
-        }
+        self.layers = self.consume_json_layers(json_layers)
+        self.control_scheme = ControlScheme(
+            controls={
+                Controls.SINGLE: {},
+                Controls.HOLD: {"place-tile": [Controls.MOUSE.value]},
+            }
+        )
+
+    def consume_json_layers(self, json_layers: dict):
+        layers = {"tiles": []}
+        for tile_dict in json_layers["tiles"]:
+            tile = Tile.from_json(tile_dict)
+            layers["tiles"].append(tile)
+        
+        return layers
+
 
     def update(self, event_builder: EventBuilder) -> None:
         """Updates the GridManager.
@@ -127,31 +137,34 @@ class GridManager:
         """
         self._control_block.update(event_builder.mouse_pos)
 
+        if "place-tile" in self.control_scheme.get_controls() and (
+            self._control_block.rect.topleft
+            not in (tile.pos for tile in self.layers["tiles"])
+        ):
+            self.write_tile(
+                self._control_block.surf, self._control_block.rect.topleft, "brick", "assets/default_tile.png"
+            )
 
-    def write_tile(self, pos: Pos, tile_type: str = "", image_path: str = "") -> None:
+    def write_tile(self, image: pygame.Surface, pos: Pos, tile_type: str = "", image_path: str = "") -> None:
         """Writes the tile data to the layers.
 
         Args:
             pos (Pos): The row, column position of the tile.
             tile_type (str): The type of the tile.
-            image_path (str): The path to the image of the tile. 
+            image_path (str): The path to the image of the tile.
         """
 
-        # Generate the tile ID depending on the pre existing registered 
-        # tile types 
+        # Generate the tile ID depending on the pre existing registered
+        # tile types
         if tile_type not in self._registered_tile_types:
             self._registered_tile_types.append(tile_type)
-        
+
         tile_id = self._registered_tile_types.index(tile_type)
 
         current_layer = self.layers[self._current_layer]
-        current_layer["tiles"].append(
-            {
-                "type": tile_type,
-                "pos": pos,
-                "id": tile_id,
-                "image": image_path
-            }
+        tile_obj = Tile(image, image_path, pos, tile_type, tile_id)
+        current_layer.append(
+            tile_obj
         )
 
     def draw(self, screen: pygame.Surface) -> None:
@@ -164,6 +177,8 @@ class GridManager:
             None
         """
         self.surf.fill("black")
+        for tile in self.layers["tiles"]:
+            tile.draw(self.surf)
         self._control_block.draw(self.surf)
         screen.blit(self.surf, self.rect)
         for col in range(self.size[0] // self.tile_size):
